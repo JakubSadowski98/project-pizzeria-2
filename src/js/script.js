@@ -582,7 +582,7 @@
       }
     },
 
-    initData: function(){ //metoda, która pobiera dane z obiektu "dataSource" w pliku data.js
+    initData: function(){ //metoda, która pobiera dane z obiektu "dataSource" komunikując się z serwerem API
       const thisApp = this;
 
       thisApp.data = {};
