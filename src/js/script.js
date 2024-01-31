@@ -484,8 +484,23 @@
         body: JSON.stringify(payload), //body - wysyłana treść; przekonwertowanie obiektu "payloud" na postać JSON
       };
 
-      fetch(url, options); //wysłanie zapytania do serwera
-    }
+      fetch(url, options) //wysłanie zapytania do serwera
+        .then(rawResponse => { // (!) zapis obsługujący wszystkie kody odpowiedzi HTTP, które informują o jakimkolwiek błędzie
+          if (rawResponse.status >= 200 && rawResponse.status < 300) {
+            return rawResponse.json();
+          } else {
+            return Promise.reject(rawResponse.status + ' ' + rawResponse.statusText);
+          }
+        })
+        .then(parsedResponse => {
+          console.log('parsedResponse', parsedResponse);
+          alert('The order was send succesfully');
+        })
+        .catch((error)=>{ // metoda wykona przekazaną jej funkcję w przypadku, kiedy nastąpi błąd połączenia
+          console.error(error);
+          alert('There was a problem with sending order. Please try again.');
+        });
+      }
   }
   /* *********************************************************************************************************************************************************************************************************************************************************************************** */
   class CartProduct{ //obsługuje pojedyncze produkty, które znajdują się w koszyku
