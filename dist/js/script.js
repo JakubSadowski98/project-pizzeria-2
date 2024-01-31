@@ -203,7 +203,7 @@
             }
           }
           // find image fitted to param-option pair e.g. sauce-tomato
-          const optionImage = thisProduct.dom.imageWrapper.querySelector('.' + paramId + '-' + optionId); //(!)sam to wymyśliłem
+          const optionImage = thisProduct.dom.imageWrapper.querySelector(`.${paramId}-${optionId}`); // (!) lub ('.' + paramId + '-' + optionId)
           // check if image was found
           if(optionImage){
             // check if there is param with a name of paramId in formData and if it includes optionId
@@ -498,7 +498,7 @@
         })
         .catch((error)=>{ // metoda wykona przekazaną jej funkcję w przypadku, kiedy nastąpi błąd połączenia
           console.error(error);
-          alert('There was a problem with sending order. Please try again.');
+          alert('There was a problem with sending Your order. Please try again.');
         });
       }
   }
