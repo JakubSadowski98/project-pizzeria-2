@@ -1,10 +1,10 @@
 import { settings, select, classNames, templates } from './settings.js'; // eslint-disable-line no-unused-vars
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
-//import Booking from './components/Booking.js';
+import Booking from './components/Booking.js';
 
 const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą jest tworzenie nowych instancji i ich wykorzystywanie
-  initPages: function(){ //obsługuje podstrony
+  initPages: function(){ //obsługuje podstrony (wyszukuje referencje do podstron i dodaje nasłuchiwacze do linków)
     const thisApp = this; // (!) "this" wskazuje na obiekt "app"
 
     thisApp.pages = document.querySelector(select.containerOf.pages).children; //referencja do podstron (dzieci elementu id="pages")
@@ -35,7 +35,7 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
     }
   },
 
-  avctivatePage: function(pageId) { // aktywuje (włącza) podstronę o danym id
+  avctivatePage: function(pageId){ // aktywuje (włącza) podstronę o danym id
     const thisApp = this;
 
     /*add class active to matching pages, remove from non-matching */
@@ -46,15 +46,6 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
     /*add class active to matching links, remove from non-matching */
     for(let link of thisApp.navLinks) {
       link.classList.toggle(classNames.nav.active, link.getAttribute('href') == '# '+ pageId);
-    }
-  },
-
-  initMenu: function(){ //metoda, która pośredniczy w tworzeniu instancji wg szablonu klasy "Product", korzystajac z pobranych danych przez "initData"
-    const thisApp = this;
-
-    for(let productData in thisApp.data.products){ //pętla przechodzi po właściwościach (a konkretnie po kluczach "productData") obiektu "products", czyli cake, breakfast, itd.
-      //new Product(productData, thisApp.data.products[productData]); //instancję klasy tworzymy za pomocą słowa kluczowego new, nazwy klasy, oraz argumentów przekazywanych do konstruktora klasy (czyli klucz właściwości oraz wartość właściwości)
-      new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
     }
   },
 
@@ -76,6 +67,15 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
       });
   },
 
+  initMenu: function(){ //metoda, która pośredniczy w tworzeniu instancji wg szablonu klasy "Product", korzystajac z pobranych danych przez "initData"
+    const thisApp = this;
+
+    for(let productData in thisApp.data.products){ //pętla przechodzi po właściwościach (a konkretnie po kluczach "productData") obiektu "products", czyli cake, breakfast, itd.
+      //new Product(productData, thisApp.data.products[productData]); //instancję klasy tworzymy za pomocą słowa kluczowego new, nazwy klasy, oraz argumentów przekazywanych do konstruktora klasy (czyli klucz właściwości oraz wartość właściwości)
+      new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
+    }
+  },
+
   initCart: function(){
     const thisApp = this;
 
@@ -88,13 +88,21 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
       });
   },
 
+  initBooking: function(){
+    const thisApp = this;
+
+    const widgetBookingContainer = document.querySelector(select.containerOf.booking);
+    thisApp.booking = new Booking(widgetBookingContainer);
+    },
+
   init: function(){ //metoda, która będzie uruchamiać wszystkie pozostałe komponenty strony, za pośrednictwem innych metod z obiektu "app"
     const thisApp = this;
 
     thisApp.initPages();
     thisApp.initData();
     thisApp.initCart();
+    thisApp.initBooking();
   },
 };
 
-app.init(); //załadowanie strony/aplikacji
+app.init(); //(!) załadowanie strony/aplikacji
