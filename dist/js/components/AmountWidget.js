@@ -1,4 +1,4 @@
-import { settings, select } from '../settings.js';
+import { settings, select } from '../settings.js'; // (!) ścieżka do importowanego pliku (../settings.js) jest zawsze relatywna do pliku, w którym się importuje (./components/AmountWidget.js)
 
 class AmountWidget{ //widget (element interfejsu graficznego) wyboru ilości produktów - jego rolą jest nadanie życia inputowi i buttonom liczbowym, tak aby informowały o swoim działaniu inne elementy
   constructor(element,  value){ //argumentem jest referencja do widgetu zmiany ilości

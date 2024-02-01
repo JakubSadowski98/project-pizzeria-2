@@ -2,10 +2,13 @@ export const select = {  //(!) referencje do elementów DOM
   templateOf: {
     menuProduct: "#template-menu-product",
     cartProduct: '#template-cart-product',
+    bookingWidget: '#template-booking-widget',
   },
   containerOf: {
     menu: '#product-list',
     cart: '#cart',
+    pages: '#pages',
+    booking: '.booking-wrapper',
   },
   all: {
     menuProducts: '#product-list > .product',
@@ -26,6 +29,23 @@ export const select = {  //(!) referencje do elementów DOM
       linkDecrease: 'a[href="#less"]',
       linkIncrease: 'a[href="#more"]',
     },
+    datePicker: {
+      wrapper: '.date-picker',
+      input: `input[name="date"]`,
+    },
+    hourPicker: {
+      wrapper: '.hour-picker',
+      input: 'input[type="range"]',
+      output: '.output',
+    },
+  },
+  booking: {
+    peopleAmount: '.people-amount',
+    hoursAmount: '.hours-amount',
+    tables: '.floor-plan .table',
+  },
+  nav: {
+    links: '.main-nav a',
   },
   cart: {
     productList: '.cart__order-summary',
@@ -55,6 +75,16 @@ export const classNames = {
   cart: {
     wrapperActive: 'active',
   },
+  booking: {
+    loading: 'loading',
+    tableBooked: 'booked',
+  },
+  nav: {
+    active: 'active',
+  },
+  pages: {
+    active: 'active',
+  },
 };
 
 export const settings = {
@@ -66,14 +96,31 @@ export const settings = {
   cart: {
     defaultDeliveryFee: 20,
   },
+  hours: {
+    open: 12,
+    close: 24,
+  },
+  datePicker: {
+    maxDaysInFuture: 14,
+  },
+  booking: {
+    tableIdAttribute: 'data-table',
+  },
   db: { // konfguracja parametrów, które są potrzebne do łączenia się z API
     url: '//localhost:3131', // link do serwera API
     products: 'products', // link do kolekcji /products
     orders: 'orders', // link do kolekcji /orders
-    },
+    bookings: 'bookings', // link do kolekcji /bookings
+    events: 'events', // link do kolekcji /events
+    dateStartParamKey: 'date_gte',
+    dateEndParamKey: 'date_lte',
+    notRepeatParam: 'repeat=false',
+    repeatParam: 'repeat_ne=false',
+  },
 };
 
 export const templates = {
-  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML), //metoda "menuProduct" jest tworzona za pomocą biblioteki "Handlebars"
-  cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML), // CODE ADDED
+  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML), //metody obiektu "templates" (np. "menuProduct") są tworzone za pomocą biblioteki "Handlebars"
+  cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
+  bookingWidget: Handlebars.compile(document.querySelector(select.templateOf.bookingWidget).innerHTML),
 };
