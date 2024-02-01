@@ -41,7 +41,6 @@ class Product{ //klasa, która stanowi szablon dla tworzonych instancji-produktu
     thisProduct.dom.cartButton = thisProduct.dom.element.querySelector(select.menuProduct.cartButton);
     thisProduct.dom.priceElem = thisProduct.dom.element.querySelector(select.menuProduct.priceElem);
     thisProduct.dom.imageWrapper = thisProduct.dom.element.querySelector(select.menuProduct.imageWrapper);
-
     thisProduct.dom.amountWidgetElem = thisProduct.dom.element.querySelector(select.menuProduct.amountWidget);
   }
 

@@ -29,7 +29,7 @@ class Booking {
   initWidgets(){
     const thisBooking = this;
 
-    thisBooking.peopleAmountt = new AmountWidget(thisBooking.dom.peopleAmount, settings.amountWidget.defaultValue);
+    thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount, settings.amountWidget.defaultValue);
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount, settings.amountWidget.defaultValue);
 
     thisBooking.dom.peopleAmount.addEventListener('updated', function(event){
@@ -38,7 +38,7 @@ class Booking {
     });
     thisBooking.dom.hoursAmount.addEventListener('updated', function(event){
       event.preventDefault();
-      
+
     });
   }
 }
