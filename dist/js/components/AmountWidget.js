@@ -1,31 +1,31 @@
-import { settings, select } from '../settings.js'; // (!) ścieżka do importowanego pliku (../settings.js) jest zawsze relatywna do pliku, w którym się importuje (./components/AmountWidget.js)
+import { settings, select } from '../settings.js'; // (!) ścieżka do importowanego pliku (../settings.js) jest zawsze relatywna do pliku, w którym się dokonuje importowania (./components/AmountWidget.js)
 import BaseWidget from './BaseWidget.js';
 
 class AmountWidget extends BaseWidget { // klasa pochodna "AmountWidget" (widget - element interfejsu graficznego) - nadaje życie inputowi i buttonom liczbowym, tak aby informowały o swoim działaniu inne elementy
-  constructor(element){ //argumentem jest referencja do kontenera widgetu
-    super(element, settings.amountWidget.defaultValue); // wywołanie metody w cely zainicjalizowania konstruktora w klasie nadrzędnej "BaseWidget"
+  constructor(wrapperElement, initialValue){ // arg1 - referencja do kontenera widgetu; arg2 - początkowa wartość w input
+    super(wrapperElement, initialValue); // (!) wywołanie metody w cely zainicjalizowania konstruktora w klasie nadrzędnej "BaseWidget"
     const thisWidget = this;
 
-    thisWidget.getElements();
-    thisWidget.initActions(); //dodanie reakcji na eventy dla input oraz buttonów "+" i "-"
+    thisWidget.getElements(); // odnalezienie elementów znajdujących się w kontenerze widgetu
+    thisWidget.initActions(); // dodanie reakcji na eventy dla input oraz buttonów "+" i "-"
+    super.setValue(); // (!) ustawienie wartości w input dla pierwszego załadowania strony; odwołanie się do metody z klasy nadrzędnej
   }
 
-  getElements(){ //metoda służąca odnalezieniu trzech elementów widgetu - inputu i dwóch buttonów
+  getElements(){
     const thisWidget = this;
 
-    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widgets.amount.input);
+    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widgets.amount.input); // pole obiektu "thisWidget.dom.wrapper" jest dziedziczone z klasy "BaseWidget"
     thisWidget.dom.linkDecrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkDecrease);
     thisWidget.dom.linkIncrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkIncrease);
   }
 
-  isValid(value){ //metoda będzie uruchamiana przy próbie zmiany wartości (w input) i decydować, czy ma na to pozwolić, czy może przywrócić starą (ostatnią dobrą) wartość
+  isValid(value){ // (!) nadpisuje metodę z klasy nadrzędnej "BaseWidget"
     return (!isNaN(value) && value <= settings.amountWidget.defaultMax && value >= settings.amountWidget.defaultMin);
   }
 
-  renderValue(){
+  renderValue(){ // (!) nadpisuje metodę z klasy nadrzędnej "BaseWidget"
     const thisWidget = this;
-
-    thisWidget.dom.input.value = thisWidget.value; //aktualizowanie wartości dla właściwości "value" w input
+    thisWidget.dom.input.value = thisWidget.value; // aktualizowanie wartości dla właściwości "value" w input
   }
 
   initActions(){
@@ -33,7 +33,7 @@ class AmountWidget extends BaseWidget { // klasa pochodna "AmountWidget" (widget
 
     thisWidget.dom.input.addEventListener('change', function(event){
       event.preventDefault();
-      thisWidget.setValue(thisWidget.dom.input.value);
+      thisWidget.setValue(thisWidget.dom.input.value); // (!) parametr metody nadpisuje wywołanie gettera
     });
 
     thisWidget.dom.linkDecrease.addEventListener('click', function(event){
