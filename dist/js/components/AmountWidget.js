@@ -8,7 +8,7 @@ class AmountWidget extends BaseWidget { // klasa pochodna "AmountWidget" (widget
 
     thisWidget.getElements(); // odnalezienie elementów znajdujących się w kontenerze widgetu
     thisWidget.initActions(); // dodanie reakcji na eventy dla input oraz buttonów "+" i "-"
-    super.setValue(); // (!) ustawienie wartości w input dla pierwszego załadowania strony; odwołanie się do metody z klasy nadrzędnej
+    super.setValue(initialValue); // (!) ustawienie wartości w input dla pierwszego załadowania strony; odwołanie się do metody z klasy nadrzędnej
   }
 
   getElements(){

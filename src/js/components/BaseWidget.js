@@ -7,12 +7,12 @@ class BaseWidget{ // klasa bazowa - stanowi bazę dla innych klas
     thisWidget.correctValue = initialValue; // przypisanie do właściwości obiektu początkowej wartości w input
   }
 
-  get value() { // (!) tzw. getter; zwraca wartość konkretnego pola obiektu (np. "thisWidget.correctValue"); służy do kontrolowania danch zapisanych w określonym polu; po instrukcji "get" tworzy metodę, która jest wywoływana przez użycie samej nazwy
+  get value() { // (!) tzw. getter; zwraca wartość konkretnego pola obiektu (np. "thisWidget.correctValue"); po instrukcji "get" tworzy metodę; wywołanie "thisWidget.value"
     const thisWidget = this;
     return thisWidget.correctValue;
   }
 
-  set value(value) { // (!) tzw. setter; ustawia wartość konkretnego pola obiektu; po instrukcji "set" tworzy metodę z dokładnie jednym argumentem
+  set value(value) { // (!) tzw. setter; ustawia wartość konkretnego pola obiektu; po instrukcji "set" tworzy metodę z dokładnie jednym argumentem; wywołanie "thisWidget.value = argument"
     const thisWidget = this;
 
     const newValue = thisWidget.parseValue(value);  // przekonwertowanie argumentu na typ liczbowy, ponieważ input zwraca wartość w formacie tekstowym
@@ -25,9 +25,9 @@ class BaseWidget{ // klasa bazowa - stanowi bazę dla innych klas
     thisWidget.renderValue();
   }
 
-  setValue(value){  // ustwaia wartość w input, ale wcześniej dokonuje walidacji argumentu; (!) dla wywołania metody bez parametru, "value" oznacza wywołanie gettera
-      const thisWidget = this;
-      thisWidget.value = value; // (!) wywołanie settera z argumentem "value"
+  setValue(value){  // ustwaia wartość w input, ale wcześniej dokonuje walidacji argumentu
+    const thisWidget = this;
+    thisWidget.value = value; // (!) wywołanie settera z argumentem "value"
   }
 
   parseValue(value){ // przekonwertowuje argument na typ liczbowy
