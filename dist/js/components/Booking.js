@@ -1,4 +1,4 @@
-import { select, settings, templates } from '../settings.js';
+import { select, classNames, settings, templates } from '../settings.js';
 import {utils} from '../utils.js';
 import AmountWidget from './AmountWidget.js';
 import DatePicker from './DatePicker.js';
@@ -30,6 +30,7 @@ class Booking { // pobiera przefiltrowane dane z API
     thisBooking.dom.hoursAmount = thisBooking.dom.wrapper.querySelector(select.booking.hoursAmount);
     thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
+    thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
   }
 
   initWidgets(){
@@ -47,6 +48,9 @@ class Booking { // pobiera przefiltrowane dane z API
     thisBooking.dom.hoursAmount.addEventListener('updated', function(event){
       event.preventDefault();
       // further instruction
+    });
+    thisBooking.dom.wrapper.addEventListener('updated', function(){
+      thisBooking.updateDOM();
     });
   }
 
@@ -74,11 +78,11 @@ class Booking { // pobiera przefiltrowane dane z API
     const urls = { // adresy do endpointów
       booking: settings.db.url + '/' + settings.db.bookings + '?' + params.booking.join('&'), // localhost:3131/bookings?date_gte=2024-02-05&date_lte=2024-02-19
       eventCurrent: settings.db.url + '/' + settings.db.events + '?' + params.eventCurrent.join('&'), // localhost:3131/events?repeat=false&date_gte=2024-02-05&date_lte=2024-02-19
-      eventRepeat:  settings.db.url + '/' + settings.db.events + '?' + params.eventRepeat.join('&'), // localhost:3131/events?repeat_ne=false&date_lte=2024-02-19
+      eventRepeat: settings.db.url + '/' + settings.db.events + '?' + params.eventRepeat.join('&'), // localhost:3131/events?repeat_ne=false&date_lte=2024-02-19
     };
 
     Promise.all([ // pozwala na wywołanie reakcji po zwróceniu wszyskich obietnic zawartych w tablicy
-      fetch(urls.booking), // obietnica_1; w momencie wykorzystania metody fetch() tworzony jest obiekt typu "Promise"
+      fetch(urls.booking), // obietnica_1; w momencie wywołania metody fetch() tworzony jest obiekt typu "Promise"
       fetch(urls.eventCurrent), // obietnica_2
       fetch(urls.eventRepeat), // obietnica_3
     ])
@@ -88,16 +92,85 @@ class Booking { // pobiera przefiltrowane dane z API
         const eventRepeatResponse = allResponses[2];
 
         return Promise.all([
-          bookingsResponse.json(),
+          bookingsResponse.json(), // uzyskanie wartości gotowej do odczytu
           eventCurrentResponse.json(),
           eventRepeatResponse.json(),
         ]);
       })
       .then(function([bookings, eventCurrent, eventRepeat]){
-        console.log('bookings', bookings);
-        console.log('eventsCurrent', eventCurrent);
-        console.log('eventsRepeat', eventRepeat);
+        //console.log('bookings', bookings);
+        //console.log('eventsCurrent', eventCurrent);
+        //console.log('eventsRepeat', eventRepeat);
+        thisBooking.parseData(bookings, eventCurrent, eventRepeat);
       });
+  }
+
+  parseData(bookings, eventCurrent, eventRepeat) { // agregowanie (gromadzenie) danych dotyczących rezerwacji stolików
+    const thisBooking = this;
+
+    thisBooking.booked = {}; // przechowywanie rezerwacji stolików na dany dzień i daną godzinę
+    const minDate = thisBooking.datePicker.minDate;
+    const maxDate = thisBooking.datePicker.maxDate;
+
+    for(let item of bookings) {
+      thisBooking.makeBooked(item.date, item.hour, item.duration, item.table)
+    }
+
+    for(let item of eventCurrent) {
+      thisBooking.makeBooked(item.date, item.hour, item.duration, item.table)
+    }
+
+    for(let item of eventRepeat) {
+      if(item.repeat == 'daily') {
+        for(let loopDate = minDate; loopDate <= maxDate; loopDate = utils.addDays(loopDate, 1)) {
+          thisBooking.makeBooked(utils.dateToStr(loopDate), item.hour, item.duration, item.table)
+        }
+      }
+    }
+
+    thisBooking.updateDOM();
+  }
+
+  makeBooked(date, hour, duration, table) { // zapisywanie rezerwacji stolików do obiektu "thisBooking.booked"
+    const thisBooking = this;
+
+    if(typeof thisBooking.booked[date] == 'undefined') { // sprawdzenie czy obiekt jest typu "undefinied"
+      thisBooking.booked[date] = {};
+    }
+
+    const startHour = utils.hourToNumber(hour);
+
+    for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock += 0.5) {
+      if(typeof thisBooking.booked[date][hourBlock] == 'undefined') {
+        thisBooking.booked[date][hourBlock] = []; // przechowywanie w tablicy numerów stolików, które są zarezerwowane
+      }
+      thisBooking.booked[date][hourBlock].push(table); // (!)
+    }
+  }
+
+  updateDOM() { // oznaczenie (wyszarzenie) niedostepnego stolika na mapie restauracji
+    const thisBooking = this;
+
+    thisBooking.date = thisBooking.datePicker.value; // wybrana data
+    thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value); // wybrana godzina
+
+    let allAvailable = false;
+    // check if table is available for given date and hour
+    if(typeof thisBooking.booked[thisBooking.date] == 'undefined' || typeof thisBooking.booked[thisBooking.date][thisBooking.hour] == 'undefined') {
+      allAvailable = true;
+    }
+    // if table is not available add class booked
+    for (let table of thisBooking.dom.tables) {
+      let tableId = table.getAttribute(settings.booking.tableIdAttribute);
+      if (!isNaN(tableId)) {
+        tableId = parseInt(tableId);
+      }
+      if(!allAvailable && thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableId)) {
+        table.classList.add(classNames.booking.tableBooked);
+      } else {
+        table.classList.remove(classNames.booking.tableBooked);
+      }
+    }
   }
 }
 

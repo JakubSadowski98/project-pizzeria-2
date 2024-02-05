@@ -26,7 +26,7 @@ class DatePicker extends BaseWidget{
       },
       disable: [
         function(date) {
-          return (date.getDay() === 1); // poniedziałek jest niedostępny przy wyborze dnia
+          return (date.getDay() === 2); // wtorek jest niedostępny przy wyborze dnia
         }
       ],
       onChange: function(selectedDates, dateStr) { // uruchomienie funkcji callback, gdy plugin wykryje zmianę terminu
