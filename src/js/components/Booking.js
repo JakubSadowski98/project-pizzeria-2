@@ -31,6 +31,11 @@ class Booking { // pobiera przefiltrowane dane z API
     thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
     thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
+    thisBooking.dom.floorPlan = thisBooking.dom.wrapper.querySelector(select.booking.floorPlan);
+    thisBooking.dom.bookingButton =  thisBooking.dom.wrapper.querySelector(select.booking.bookingButton);
+    thisBooking.dom.phone = thisBooking.dom.wrapper.querySelector(select.booking.phone);
+    thisBooking.dom.address = thisBooking.dom.wrapper.querySelector(select.booking.address);
+    thisBooking.dom.starters = thisBooking.dom.wrapper.querySelectorAll(select.booking.starters);
   }
 
   initWidgets(){
@@ -49,8 +54,16 @@ class Booking { // pobiera przefiltrowane dane z API
       event.preventDefault();
       // further instruction
     });
-    thisBooking.dom.wrapper.addEventListener('updated', function(){
+    thisBooking.dom.wrapper.addEventListener('updated', function(){ // odznaczenie wybranego stolika przy zmianie godziny, daty, liczby gości oraz liczby godzin
+      thisBooking.removeTables();
       thisBooking.updateDOM();
+    });
+    thisBooking.dom.floorPlan.addEventListener('click', function(event) { // zaznaczenie wybranego stolika przy kliknięciu na dany stolik
+      thisBooking.initTables(event);
+    });
+    thisBooking.dom.bookingButton.addEventListener('click', function(event){ //nasłuchiwanie przycisku "BOOK TABEL"
+      event.preventDefault();
+      thisBooking.sendBooking();
     });
   }
 
@@ -171,6 +184,84 @@ class Booking { // pobiera przefiltrowane dane z API
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+  }
+
+  removeTables() { // odznaczanie wybranego stolika
+    const thisBooking = this;
+
+     for (let table of thisBooking.dom.tables) {
+       table.classList.remove(classNames.booking.tableSelected);
+     }
+   }
+
+  initTables(event){ // zaznaczenie wybranego stolika
+    const thisBooking = this;
+
+    thisBooking.removeTables(); // odznaczenie wyboru stolika, przy dokonaniu wyboru innego stolika
+    thisBooking.selected = {}; // przechowywanie informacji o wybranym stoliku
+    const tableId = event.target.getAttribute('data-table');
+    const isBooked = event.target.classList.contains(classNames.booking.tableBooked);
+    const isSelected = event.target.classList.contains(classNames.booking.tableSelected);
+
+    if (tableId) {
+      if(isBooked) {
+          alert('This table is already booked. Chose another table');
+      } else if (isSelected) {
+          event.target.classList.remove(classNames.booking.tableSelected);
+          thisBooking.selected = {};
+      } else {
+          event.target.classList.add(classNames.booking.tableSelected);
+          thisBooking.selected = tableId;
+      }
+    }
+  }
+
+  sendBooking() { // wysłanie rezerwacji na serwer
+    const thisBooking = this;
+
+    const url = settings.db.url + '/' + settings.db.bookings;
+    const payload = { // obiekt z danymi rezerwacji do wysłania na serwer
+      date: thisBooking.datePicker.value,
+      hour: thisBooking.hourPicker.value,
+      table: parseInt(thisBooking.selected),
+      duration: parseInt(thisBooking.hoursAmount.value),
+      ppl: parseInt(thisBooking.peopleAmount.value),
+      starters: [],
+      phone: thisBooking.dom.phone.value,
+      address: thisBooking.dom.address.value,
+    };
+
+    for (let starter of thisBooking.dom.starters) {
+      if (starter.checked) {
+        payload.starters.push(starter.value);
+      }
+    }
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    };
+
+    fetch(url, options)
+      .then(rawResponse => { // (!) zapis obsługujący wszystkie kody odpowiedzi HTTP, które informują o jakimkolwiek błędzie
+        if (rawResponse.status >= 200 && rawResponse.status < 300) {
+          return rawResponse.json();
+        } else {
+          return Promise.reject(rawResponse.status + ' ' + rawResponse.statusText);
+        }
+      })
+      .then(parsedResponse => {
+        console.log('parsedResponse', parsedResponse);
+        thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table); // dodanie nowej rezerwacji
+        alert('The booking was send succesfully');
+      })
+      .catch((error) => { // metoda wykona przekazaną jej funkcję w przypadku, kiedy nastąpi błąd połączenia
+        console.error(error);
+        alert('There was a problem with sending Your order. Please try again.');
+      });
   }
 }
 
