@@ -146,8 +146,7 @@ class Cart{ //obsługuje cały koszyk i wszystkie jego funkcjonalności
           return Promise.reject(rawResponse.status + ' ' + rawResponse.statusText);
         }
       })
-      .then(parsedResponse => {
-        console.log('parsedResponse', parsedResponse);
+      .then(() => {
         alert('The order was send succesfully');
       })
       .catch((error) => { // metoda wykona przekazaną jej funkcję w przypadku, kiedy nastąpi błąd połączenia

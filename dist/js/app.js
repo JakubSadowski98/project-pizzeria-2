@@ -1,4 +1,4 @@
-import { settings, select, classNames, templates } from './settings.js'; // eslint-disable-line no-unused-vars
+import { settings, select, classNames } from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
 import Booking from './components/Booking.js';
@@ -87,12 +87,11 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
     for (let homeLink of thisApp.homeLinks) {
       homeLink.addEventListener('click', function(event) {
         const clickedElement = this;
-        console.log('clickedelement',clickedElement);
         event.preventDefault();
         /* get page id from href attibute*/
-        const linkId = clickedElement.getAttribute('href').replace('#','');
+        const linkId = clickedElement.getAttribute('href').replace(/#/g, '');
         /* run thisApp.activatePage with that id*/
-        thisApp. avctivatePage(linkId);
+        thisApp.avctivatePage(linkId);
         /* Change URL hash*/
         window.location.hash = '#/' + linkId;
       });

@@ -162,25 +162,22 @@
       height: 194px;
       justify-content: center;
       align-items: center;
+      text-decoration: none;
 
-      a {
-        text-decoration: none;
+      i {
+        position: relative;
+        color: $color-light;
+        font-size: 20px;
+        transition: $transition;
+        z-index: 1;
+        display: none;
+        padding: 5px;
+      }
 
-        i {
-          position: relative;
-          color: $color-light;
-          font-size: 20px;
-          transition: $transition;
-          z-index: 1;
-          display: none;
-          padding: 5px;
-        }
-
-        i:hover {
-          cursor: pointer;
-          color: $color-main;
-          display: block;
-        }
+      i:hover {
+        cursor: pointer;
+        color: $color-main;
+        display: block;
       }
     }
   }

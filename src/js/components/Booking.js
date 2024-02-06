@@ -111,9 +111,6 @@ class Booking { // pobiera przefiltrowane dane z API
         ]);
       })
       .then(function([bookings, eventCurrent, eventRepeat]){
-        //console.log('bookings', bookings);
-        //console.log('eventsCurrent', eventCurrent);
-        //console.log('eventsRepeat', eventRepeat);
         thisBooking.parseData(bookings, eventCurrent, eventRepeat);
       });
   }
@@ -253,7 +250,7 @@ class Booking { // pobiera przefiltrowane dane z API
           return Promise.reject(rawResponse.status + ' ' + rawResponse.statusText);
         }
       })
-      .then(parsedResponse => {
+      .then(() => {
         thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table); // dodanie nowej rezerwacji
         alert('The booking was send succesfully');
       })

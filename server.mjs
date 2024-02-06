@@ -1,6 +1,3 @@
-// Jest to plik, który po uruchomieniu będzie tworzył serwer udostępniający wszystkie dane z pliku
-// dist/db/app.json w formie endpointów (standardowe zachowanie JSON-servera), a także
-// serwował aplikację zbudowaną w katalogu dist (nowa rola).
 import path from 'path';
 import jsonServer from 'json-server';
 
