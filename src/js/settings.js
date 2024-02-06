@@ -1,19 +1,28 @@
 export const select = {  //(!) referencje do elementów DOM
   templateOf: {
+    home:'#template-home',
     menuProduct: "#template-menu-product",
     cartProduct: '#template-cart-product',
     bookingWidget: '#template-booking-widget',
   },
   containerOf: {
+    pages: '#pages',
+    home:'.home-wrapper',
+    carousel: '.main-carousel',
     menu: '#product-list',
     cart: '#cart',
-    pages: '#pages',
     booking: '.booking-wrapper',
   },
   all: {
     menuProducts: '#product-list > .product',
     menuProductsActive: '#product-list > .product.active',
     formInputs: 'input, select',
+  },
+  nav: {
+    links: '.main-nav a',
+  },
+  home: {
+    homeLinks: '.home-button',
   },
   menuProduct: {
     clickable: '.product__header',
@@ -48,9 +57,6 @@ export const select = {  //(!) referencje do elementów DOM
     phone: '[name="phone"]',
     address: '[name="address"]',
     starters: '.checkbox label input',
-  },
-  nav: {
-    links: '.main-nav a',
   },
   cart: {
     productList: '.cart__order-summary',
@@ -125,8 +131,9 @@ export const settings = {
   },
 };
 
-export const templates = {
-  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML), //metody obiektu "templates" (np. "menuProduct") są tworzone za pomocą biblioteki "Handlebars"
+export const templates = { //metody obiektu "templates" (np. "home") są tworzone za pomocą biblioteki "Handlebars"
+  home: Handlebars.compile(document.querySelector(select.templateOf.home).innerHTML),
+  menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
   bookingWidget: Handlebars.compile(document.querySelector(select.templateOf.bookingWidget).innerHTML),
 };

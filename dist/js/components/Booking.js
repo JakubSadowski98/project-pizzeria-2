@@ -254,7 +254,6 @@ class Booking { // pobiera przefiltrowane dane z API
         }
       })
       .then(parsedResponse => {
-        console.log('parsedResponse', parsedResponse);
         thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table); // dodanie nowej rezerwacji
         alert('The booking was send succesfully');
       })

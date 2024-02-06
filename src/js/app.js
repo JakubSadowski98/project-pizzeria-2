@@ -2,6 +2,7 @@ import { settings, select, classNames, templates } from './settings.js'; // esli
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
 import Booking from './components/Booking.js';
+import Home from './components/Home.js';
 
 const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą jest tworzenie nowych instancji i ich wykorzystywanie
   initPages: function(){ //obsługuje podstrony (wyszukuje referencje do podstron i dodaje nasłuchiwacze do linków)
@@ -76,6 +77,28 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
     }
   },
 
+  initHome: function (){
+    const thisApp = this;
+
+    thisApp.homeContainer = document.querySelector(select.containerOf.home);
+    thisApp.homeLinks = document.querySelectorAll(select.home.homeLinks);
+    thisApp.home = new Home(thisApp.homeContainer);
+
+    for (let homeLink of thisApp.homeLinks) {
+      homeLink.addEventListener('click', function(event) {
+        const clickedElement = this;
+        console.log('clickedelement',clickedElement);
+        event.preventDefault();
+        /* get page id from href attibute*/
+        const linkId = clickedElement.getAttribute('href').replace('#','');
+        /* run thisApp.activatePage with that id*/
+        thisApp. avctivatePage(linkId);
+        /* Change URL hash*/
+        window.location.hash = '#/' + linkId;
+      });
+    }
+  },
+
   initCart: function(){
     const thisApp = this;
 
@@ -100,6 +123,7 @@ const app = { //obiekt, który pomaga w organizacji kodu aplikacji; jego rolą j
 
     thisApp.initPages();
     thisApp.initData();
+    thisApp.initHome();
     thisApp.initCart();
     thisApp.initBooking();
   },
